@@ -1,4 +1,4 @@
-import {AppBar, Avatar, Box, Button, Grid, Toolbar} from "@mui/material";
+import {AppBar, Avatar, Box, Grid, Toolbar} from "@mui/material";
 import {MdSearch} from "react-icons/all";
 import React from "react";
 
