@@ -32,24 +32,22 @@ const ConnectionBox = () => {
     const refreshData = async () => {
         console.log('ss')
         let data:any = await _getAllData()
-        data.length ?
-            setConnectionDataList(data.map((item:any) => {
+        await setConnectionDataList(data.map((item:any) => {
+            return(
+                {
+                    id: item.id,
+                    social_id : item.social_id,
+                    social_link : item.social_link,
+                    social_type : item.social_link.includes('instagram') ? 'instagram' :
+                        item.social_link.includes('facebook') ? 'facebook' :
+                            item.social_link.includes('linkedin') ? 'linkedin' :
+                                item.social_link.includes('telegram') ? 'telegram' :
+                                    item.social_link.includes('twitter') ? 'twitter' :
+                                        'webSite'
+                }
+            )
+        }))
 
-                return(
-                    {
-                        id: item.id,
-                        social_id : item.social_id,
-                        social_link : item.social_link,
-                        social_type : item.social_link.includes('instagram') ? 'instagram' :
-                            item.social_link.includes('facebook') ? 'facebook' :
-                                item.social_link.includes('linkedin') ? 'linkedin' :
-                                    item.social_link.includes('telegram') ? 'telegram' :
-                                        item.social_link.includes('twitter') ? 'twitter' :
-                                            'webSite'
-                    }
-                )
-
-            })):setConnectionDataList([])
         duty.mode === 'refresh' && setDuty({mode:null})
     }
 
