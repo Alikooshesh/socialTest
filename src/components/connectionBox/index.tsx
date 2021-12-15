@@ -191,6 +191,7 @@ const ConnectionBox = () => {
                                         onClick={()=> {
                                             setAddEditBoxOpen(false)
                                             formik.resetForm()
+                                            setDuty({mode:null})
                                         }}>انصراف</Button>
                                 <Button size={'large'} color={'warning'} variant={'contained'} sx={{borderRadius:'8px'}} onClick={() => submitForm(formik.values)}>
                                     {duty.mode !== 'edit' ? 'ثبت مسیر ارتباطی' : `ویرایش مسیر ارتباطی ${duty.onEdit?.social_type}`}
