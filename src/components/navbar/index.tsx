@@ -6,7 +6,7 @@ const Navbar = () => {
     return(
         <>
             <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static" color={'transparent'} sx={{boxShadow: 'none'}}>
+                <AppBar position="static" color={'transparent'} sx={{boxShadow: 0}}>
                     <Toolbar sx={{justifyContent: 'space-between'}}>
                         <div>
                             <MdSearch style={{fontSize: '24px'}}/>
