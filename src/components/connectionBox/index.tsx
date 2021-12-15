@@ -30,6 +30,7 @@ const ConnectionBox = () => {
     const [addEditBoxOpen , setAddEditBoxOpen] = useState<boolean>(false)
 
     const refreshData = async () => {
+        console.log('ss')
         let data:any = await _getAllData()
         data.length ?
             setConnectionDataList(data.map((item:any) => {
@@ -54,6 +55,11 @@ const ConnectionBox = () => {
 
     useEffect(()=>{
         duty && duty.mode === 'refresh' && refreshData()
+        duty && duty.mode === 'edit' && formik.setValues({
+            social_type: duty.onEdit?.social_type || '',
+            social_id: duty.onEdit?.social_id || '',
+            social_link: duty.onEdit?.social_link || '',
+        })
     },[duty])
 
     const duplicateCheck = (type:string , id:string , link:string) => {
@@ -68,9 +74,9 @@ const ConnectionBox = () => {
 
     const formik = useFormik({
         initialValues:{
-            social_type : "",
-            social_id : "",
-            social_link : ""
+            social_type : (duty.mode === 'edit' && duty?.onEdit?.social_type) || '' ,
+            social_id : (duty.mode === 'edit' && duty?.onEdit?.social_id) ? duty?.onEdit?.social_id : '',
+            social_link : (duty.mode === 'edit' && duty?.onEdit?.social_link) || ''
         },
         onSubmit: (values)=>{
             submitForm(values)
@@ -94,6 +100,7 @@ const ConnectionBox = () => {
 
     return(
         <>
+            {console.log({formik : formik.values , duty})}
             <Container maxWidth={'lg'}>
                 <Typography variant={'h4'} color={'black'}>حساب کاربری</Typography>
                 <Grid container spacing={1} alignItems={'end'} sx={{marginBottom: '1rem'}}>
@@ -117,7 +124,7 @@ const ConnectionBox = () => {
                 <Box sx={{backgroundColor:'#f5f5f5', padding: '1rem' , boxShadow: 3}} borderRadius={'15px'}>
                     <Typography variant={'h6'} color={'darkgray'}>مسیر های ارتباطی</Typography>
                     <Button sx={{borderRadius:'4px' , marginBottom:'8px'}} size={'large'} color={'warning'} onClick={()=> setAddEditBoxOpen(!addEditBoxOpen)}>+ افزودن مسیر ارتباطی</Button>
-                    <Collapse in={addEditBoxOpen}>
+                    <Collapse in={duty.mode === "edit" || addEditBoxOpen}>
                         <Box sx={{backgroundColor:'#eeeeee', padding: '1rem' , marginBottom: '2.5rem'}} borderRadius={'15px'}>
                             <Typography variant={'h6'} color={'black'}>{duty.mode !== 'edit' ? 'افزودن مسیر ارتباطی' : `ویرایش مسیر ارتباطی ${duty.onEdit?.social_type}`}</Typography>
                             <Stack direction={'row'} justifyContent={'space-between'}>
