@@ -81,13 +81,15 @@ const ConnectionBox = () => {
     })
 
     const submitForm= (values:FormikValues)=>{
-        (duty.mode === 'edit' && duty.onEdit?.id) &&
-        !duplicateCheck(values.social_type , values.social_id , values.social_link) ?
-            _editData(duty.onEdit?.id , {social_link : values.social_link , social_id : values.social_id}) :
-            _addData({social_link : values.social_link , social_id : values.social_id})
-
-        setDuty({mode: 'refresh'})
-        formik.resetForm()
+        if(!duplicateCheck(values.social_type , values.social_id , values.social_link)){
+            (duty.mode === 'edit' && duty.onEdit?.id) ?
+                _editData(duty.onEdit?.id , {social_link : values.social_link , social_id : values.social_id}) :
+                _addData({social_link : values.social_link , social_id : values.social_id})
+            setDuty({mode: 'refresh'})
+            formik.resetForm()
+        }else {
+            console.error('duplicate data')
+        }
     }
 
     return(
@@ -192,7 +194,7 @@ const ConnectionBox = () => {
                     <Grid direction={'column'} container rowSpacing={2}>
                         {connectionDataList?.map((item ) => {
                             return(
-                                <Grid item>
+                                <Grid key={`item-connectionCard-id-${item.id}`} item>
                                     <ConnectionCard key={`connection-data-${item.id}`} id={item.id} social_id={item.social_id}
                                                     social_link={item.social_link} social_type={item.social_type} setDuty={setDuty}/>
                                 </Grid>
