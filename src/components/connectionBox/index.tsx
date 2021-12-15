@@ -210,7 +210,8 @@ const ConnectionBox = () => {
                             return(
                                 <Grid key={`item-connectionCard-id-${item.id}`} item>
                                     <ConnectionCard key={`connection-data-${item.id}`} id={item.id} social_id={item.social_id}
-                                                    social_link={item.social_link} social_type={item.social_type} setDuty={setDuty}/>
+                                                    social_link={item.social_link} social_type={item.social_type} setDuty={setDuty}
+                                                    refreshData={refreshData}/>
                                 </Grid>
                             )
                         })}

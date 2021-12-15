@@ -13,7 +13,8 @@ import {connectionData} from "../../interfaces/dataInterface";
 import RemoveDialog from "./removeDialog";
 
 export interface ConnectionCardProps extends connectionData{
-    setDuty : Function
+    setDuty : Function,
+    refreshData : Function
 }
 
 const ConnectionCard:React.FC<ConnectionCardProps> = (props)=>{
@@ -21,7 +22,10 @@ const ConnectionCard:React.FC<ConnectionCardProps> = (props)=>{
     const [removeDialogOpen , setRemoveDialogOpen] = useState<boolean>(false)
 
     useEffect(()=>{
-        if (!removeDialogOpen){props.setDuty({mode:'refresh'})}
+        if (!removeDialogOpen){
+            props.refreshData()
+            props.setDuty({mode:'refresh'})
+        }
     },[removeDialogOpen])
 
     return(
@@ -68,11 +72,11 @@ const ConnectionCard:React.FC<ConnectionCardProps> = (props)=>{
                                 }
                         >
                             <MdModeEditOutline />
-                            <Typography component={'p'} sx={{marginRight: '0.5rem'}}>ویرایش</Typography>
+                            <Typography component={'div'} sx={{marginRight: '0.5rem'}}>ویرایش</Typography>
                         </Button>
                         <Button color={'error'} onClick={()=> setRemoveDialogOpen(true)}>
                             <MdDelete />
-                            <Typography component={'p'} sx={{marginRight: '0.5rem'}}>حذف</Typography>
+                            <Typography component={'div'} sx={{marginRight: '0.5rem'}}>حذف</Typography>
                         </Button>
                     </Stack>
                 </Stack>
