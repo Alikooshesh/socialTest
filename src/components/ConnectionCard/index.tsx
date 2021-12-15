@@ -58,7 +58,15 @@ const ConnectionCard:React.FC<ConnectionCardProps> = (props)=>{
                     </Stack>
 
                     <Stack direction={'row'} justifyContent={'end'} alignItems={'center'}>
-                        <Button color={'warning'} onClick={()=> props.setDuty({mode : 'edit' , id : props.id})}>
+                        <Button color={'warning'}
+                                onClick={()=> props.setDuty({mode : 'edit' ,
+                                        onEdit : {id: props.id ,
+                                        social_type : props.social_type ,
+                                        social_id : props.social_id ,
+                                        social_link : props.social_link}
+                                        })
+                                }
+                        >
                             <MdModeEditOutline />
                             <Typography component={'p'} sx={{marginRight: '0.5rem'}}>ویرایش</Typography>
                         </Button>
