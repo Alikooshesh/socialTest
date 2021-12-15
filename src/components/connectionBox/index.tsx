@@ -11,11 +11,12 @@ import {
     Stack, TextField,
     Typography
 } from "@mui/material";
-import {BsDot} from "react-icons/all";
+import {BsDot, FaTelegram, FaTwitter, GrFacebook, GrLinkedin, MdHttp, RiInstagramFill} from "react-icons/all";
 import ConnectionCard from "../ConnectionCard";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {editData, getAllData} from "../../services";
 import {connectionData} from "../../interfaces/dataInterface";
+import {useFormik} from "formik";
 
 export interface Iduty{
     mode : 'edit' | 'refresh',
@@ -61,9 +62,20 @@ const ConnectionBox = () => {
         setDuty(false)
     },[duty])
 
+    const formik = useFormik({
+        initialValues:{
+            social_type : "",
+            social_id : "",
+            social_link : ""
+        },
+        onSubmit: (values)=>{
+            console.log(values)
+        }
+    })
+
     return(
         <>
-            {console.log(connectionDataList)}
+            {console.log(formik.values)}
             <Container maxWidth={'lg'}>
                 <Typography variant={'h4'} color={'black'}>حساب کاربری</Typography>
                 <Grid container spacing={1} alignItems={'end'} sx={{marginBottom: '1rem'}}>
@@ -94,19 +106,44 @@ const ConnectionBox = () => {
                                 <FormControl sx={{width : '30%'}}>
                                     <InputLabel id="socialMedia-select-label">نوع*</InputLabel>
                                     <Select
+                                        name={'social_type'}
                                         labelId="socialMedia-select-label"
                                         id="socialMedia-select"
-                                        value={''}
+                                        value={formik.values.social_type}
                                         label="*نوع"
                                         required={true}
+                                        onChange={formik.handleChange}
                                     >
-                                        <MenuItem value={10}>Ten</MenuItem>
-                                        <MenuItem value={20}>Twenty</MenuItem>
-                                        <MenuItem value={30}>Thirty</MenuItem>
+                                        <MenuItem value={"twitter"}>
+                                            <FaTwitter/>
+                                            <span style={{marginRight : '8px'}}>توییتر</span>
+                                        </MenuItem>
+                                        <MenuItem value={"instagram"}>
+                                            <RiInstagramFill/>
+                                            <span style={{marginRight : '8px'}}>اینستاگرام</span>
+                                        </MenuItem>
+                                        <MenuItem value={"facebook"}>
+                                            <GrFacebook/>
+                                            <span style={{marginRight : '8px'}}>فیسبوک</span>
+                                        </MenuItem>
+                                        <MenuItem value={"telegram"}>
+                                            <FaTelegram/>
+                                            <span style={{marginRight : '8px'}}>تلگرام</span>
+                                        </MenuItem>
+                                        <MenuItem value={"linkedin"}>
+                                            <GrLinkedin/>
+                                            <span style={{marginRight : '8px'}}>لینکدین</span>
+                                        </MenuItem>
+                                        <MenuItem value={"webSite"}>
+                                            <MdHttp/>
+                                            <span style={{marginRight : '8px'}}>وبسایت</span>
+                                        </MenuItem>
                                     </Select>
                                 </FormControl>
-                                <TextField label="لینک" variant="outlined" sx={{width : '30%'}}/>
-                                <TextField label="آی دی (ID)" variant="outlined" sx={{width : '30%'}}/>
+                                <TextField name={'social_link'} label="لینک" variant="outlined" sx={{width : '30%'}}
+                                    value={formik.values.social_link} onChange={formik.handleChange}/>
+                                <TextField name={'social_id'} label="آی دی (ID)" variant="outlined" sx={{width : '30%'}}
+                                    value={formik.values.social_id} onChange={formik.handleChange}/>
                             </Stack>
 
                             <Stack direction={'row'} justifyContent={'end'} sx={{marginTop: '2rem'}}>
