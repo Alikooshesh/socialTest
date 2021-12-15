@@ -25,6 +25,7 @@ export interface Iduty{
 const ConnectionBox = () => {
     const [duty , setDuty] = useState<false|Iduty>({mode : 'refresh'})
     const [connectionDataList , setConnectionDataList] = useState<connectionData[] | null>(null)
+    const [addEditBoxOpen , setAddEditBoxOpen] = useState<boolean>(false)
 
     const refreshData = async () => {
         let data:any = await getAllData()
@@ -85,8 +86,8 @@ const ConnectionBox = () => {
 
                 <Box sx={{backgroundColor:'#f5f5f5', padding: '1rem' , boxShadow: 3}} borderRadius={'15px'}>
                     <Typography variant={'h6'} color={'darkgray'}>مسیر های ارتباطی</Typography>
-                    <Button sx={{borderRadius:'4px' , marginBottom:'8px'}} size={'large'} color={'warning'}>+ افزودن مسیر ارتباطی</Button>
-                    <Collapse in={true}>
+                    <Button sx={{borderRadius:'4px' , marginBottom:'8px'}} size={'large'} color={'warning'} onClick={()=> setAddEditBoxOpen(!addEditBoxOpen)}>+ افزودن مسیر ارتباطی</Button>
+                    <Collapse in={addEditBoxOpen}>
                         <Box sx={{backgroundColor:'#eeeeee', padding: '1rem' , marginBottom: '2.5rem'}} borderRadius={'15px'}>
                             <Typography variant={'h6'} color={'black'}>افزودن مسیر ارتباطی</Typography>
                             <Stack direction={'row'} justifyContent={'space-between'}>
@@ -109,23 +110,22 @@ const ConnectionBox = () => {
                             </Stack>
 
                             <Stack direction={'row'} justifyContent={'end'} sx={{marginTop: '2rem'}}>
-                                <Button size={'large'} color={'inherit'} variant={'outlined'} sx={{marginLeft: '1rem' , borderRadius:'8px'}}>انصراف</Button>
+                                <Button size={'large'} color={'inherit'} variant={'outlined'} sx={{marginLeft: '1rem' , borderRadius:'8px'}} onClick={()=>setAddEditBoxOpen(false)}>انصراف</Button>
                                 <Button size={'large'} color={'warning'} variant={'contained'} sx={{borderRadius:'8px'}}>ثبت مسیر ارتباطی</Button>
                             </Stack>
                         </Box>
-
-                        <Grid direction={'column'} container rowSpacing={2}>
-                            {connectionDataList?.map((item ) => {
-                                return(
-                                    <Grid item>
-                                        <ConnectionCard key={`connection-data-${item.id}`} id={item.id} social_id={item.social_id}
-                                                        social_link={item.social_link} social_type={item.social_type} setDuty={setDuty}/>
-                                    </Grid>
-                                )
-                            })}
-
-                        </Grid>
                     </Collapse>
+                    <Grid direction={'column'} container rowSpacing={2}>
+                        {connectionDataList?.map((item ) => {
+                            return(
+                                <Grid item>
+                                    <ConnectionCard key={`connection-data-${item.id}`} id={item.id} social_id={item.social_id}
+                                                    social_link={item.social_link} social_type={item.social_type} setDuty={setDuty}/>
+                                </Grid>
+                            )
+                        })}
+
+                    </Grid>
                 </Box>
             </Container>
         </>
