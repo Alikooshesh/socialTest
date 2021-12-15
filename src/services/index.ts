@@ -1,7 +1,7 @@
 import axios from "axios";
 import {connectionData} from "../interfaces/dataInterface";
 
-export const getAllData = async () =>{
+export const _getAllData = async () =>{
     let result:any = ""
     await axios.get('http://localhost:3030/socials')
         .then((data) => {
@@ -15,7 +15,7 @@ export const getAllData = async () =>{
     return result
 }
 
-export const editData = (id:string ,newData:connectionData) => {
+export const _editData = (id:string ,newData:connectionData) => {
     let result:boolean = false
     axios.patch(`http://localhost:3030/socials/${id}`,{social_id : newData.social_id , social_link : newData.social_link})
         .then(data => {
@@ -29,7 +29,7 @@ export const editData = (id:string ,newData:connectionData) => {
     return result
 }
 
-export const addData = (data:connectionData)=> {
+export const _addData = (data:connectionData)=> {
     let result:boolean = false
     axios.post('http://localhost:3030/socials',{social_id : data.social_id , social_link : data.social_link})
         .then(data => {
@@ -43,7 +43,7 @@ export const addData = (data:connectionData)=> {
     return result
 }
 
-export const deleteData = (id:string) => {
+export const _deleteData = (id:string) => {
     let result:boolean = false
     axios.delete(`http://localhost:3030/socials/${id}`)
         .then(data => {

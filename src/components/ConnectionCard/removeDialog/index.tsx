@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import {connectionData} from "../../../interfaces/dataInterface";
-import {deleteData} from "../../../services";
+import {_deleteData} from "../../../services";
+import {useFormik} from "formik";
 
 export interface RemoveDialogProps extends connectionData{
     removeDialogOpen : boolean,
@@ -20,12 +21,25 @@ export interface RemoveDialogProps extends connectionData{
 const RemoveDialog:React.FC<RemoveDialogProps> = (props)=>{
 
     const acceptDeleteData = () => {
-        props.id && deleteData(props.id)
+        props.id && _deleteData(props.id)
+        formik.resetForm()
         props.setRemoveDialogOpen(false)
     }
 
+    const formik = useFormik({
+        initialValues : {
+            acceptDelInput : ''
+        },
+        onSubmit : (values) => {
+            values.acceptDelInput === 'تایید' && acceptDeleteData()
+        }
+    })
+
     return(
-        <Dialog open={props.removeDialogOpen} onClose={()=> props.setRemoveDialogOpen(false)}>
+        <Dialog open={props.removeDialogOpen} onClose={()=> {
+            props.setRemoveDialogOpen(false)
+            formik.resetForm()
+        }}>
             <DialogTitle>آیا از تصمیم خود مطمئن هستید؟</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -41,11 +55,14 @@ const RemoveDialog:React.FC<RemoveDialogProps> = (props)=>{
                     fullWidth
                     variant="outlined"
                     placeholder={'تایید'}
+                    value={formik.values.acceptDelInput}
+                    onChange={formik.handleChange}
+                    name={'acceptDelInput'}
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={()=> props.setRemoveDialogOpen(false)} color={'warning'}>Cancel</Button>
-                <Button onClick={acceptDeleteData} color={'inherit'}>حذف</Button>
+                <Button onClick={()=> props.setRemoveDialogOpen(false)} color={'warning'}>انصراف</Button>
+                <Button onClick={acceptDeleteData} color={'inherit'} type={"submit"}>حذف</Button>
             </DialogActions>
         </Dialog>
     )
