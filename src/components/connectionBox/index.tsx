@@ -106,7 +106,6 @@ const ConnectionBox = () => {
 
     return(
         <>
-            {console.log({duty : duty})}
             <Container maxWidth={'lg'}>
                 <Typography variant={'h4'} color={'black'}>حساب کاربری</Typography>
                 <Grid container spacing={1} alignItems={'end'} sx={{marginBottom: '1rem'}}>
