@@ -14,9 +14,10 @@ import {
 import {BsDot, FaTelegram, FaTwitter, GrFacebook, GrLinkedin, MdHttp, RiInstagramFill} from "react-icons/all";
 import ConnectionCard from "../ConnectionCard";
 import React, {useEffect, useState} from "react";
-import {_getAllData} from "../../services";
+import {_addData, _editData, _getAllData} from "../../services";
 import {connectionData} from "../../interfaces/dataInterface";
-import {useFormik} from "formik";
+import {FormikValues, useFormik} from "formik";
+import * as yup from 'yup';
 
 export interface Iduty{
     mode : 'edit' | 'refresh' | null,
@@ -48,19 +49,22 @@ const ConnectionBox = () => {
                 )
 
             })):setConnectionDataList([])
-        return connectionDataList
+        duty.mode === 'refresh' && setDuty({mode:null})
     }
 
     useEffect(()=>{
-        if (duty !== null){
-            // duty.mode === 'refresh' ?  refreshData() :
-                // duty.id &&
-                // editData(duty.id, {social_id : "" , social_link : ""}) &&
-                // setDuty({mode : 'refresh'})
-
-        }
-        duty.mode !== null && setDuty({mode:null})
+        duty && duty.mode === 'refresh' && refreshData()
     },[duty])
+
+    const duplicateCheck = (type:string , id:string , link:string) => {
+        let result:boolean = false
+        const similarTypeData = connectionDataList?.filter(item => item.social_type === type)
+        const similarIDData = similarTypeData?.filter(item => item.social_id === id)
+        const similarLinkData = similarIDData?.filter(item => item.social_link === link)
+
+        similarLinkData && similarLinkData.length > 0 ? result = true : result = false
+        return result
+    }
 
     const formik = useFormik({
         initialValues:{
@@ -69,13 +73,25 @@ const ConnectionBox = () => {
             social_link : ""
         },
         onSubmit: (values)=>{
-            console.log(values)
-        }
+            submitForm(values)
+        },
+        validationSchema : yup.object({
+            social_type: yup.string().required('الزامی است')
+        })
     })
+
+    const submitForm= (values:FormikValues)=>{
+        (duty.mode === 'edit' && duty.onEdit?.id) &&
+        !duplicateCheck(values.social_type , values.social_id , values.social_link) ?
+            _editData(duty.onEdit?.id , {social_link : values.social_link , social_id : values.social_id}) :
+            _addData({social_link : values.social_link , social_id : values.social_id})
+
+        setDuty({mode: 'refresh'})
+        formik.resetForm()
+    }
 
     return(
         <>
-            {console.log(duty)}
             <Container maxWidth={'lg'}>
                 <Typography variant={'h4'} color={'black'}>حساب کاربری</Typography>
                 <Grid container spacing={1} alignItems={'end'} sx={{marginBottom: '1rem'}}>
@@ -114,6 +130,7 @@ const ConnectionBox = () => {
                                         label="*نوع"
                                         required={true}
                                         onChange={formik.handleChange}
+                                        error={formik.touched.social_type && Boolean(formik.errors.social_type)}
                                     >
                                         <MenuItem value={"twitter"}>
                                             <ListItemIcon>
@@ -152,6 +169,7 @@ const ConnectionBox = () => {
                                             <span style={{marginRight : '8px'}}>وبسایت</span>
                                         </MenuItem>
                                     </Select>
+                                    <Typography>{formik.touched.social_type && formik.errors.social_type}</Typography>
                                 </FormControl>
                                 <TextField name={'social_link'} label="لینک" color={'warning'} variant="outlined" sx={{width : '30%'}}
                                     value={formik.values.social_link} onChange={formik.handleChange}/>
@@ -165,7 +183,9 @@ const ConnectionBox = () => {
                                             setAddEditBoxOpen(false)
                                             formik.resetForm()
                                         }}>انصراف</Button>
-                                <Button size={'large'} color={'warning'} variant={'contained'} sx={{borderRadius:'8px'}}>ثبت مسیر ارتباطی</Button>
+                                <Button size={'large'} color={'warning'} variant={'contained'} sx={{borderRadius:'8px'}} onClick={() => submitForm(formik.values)}>
+                                    {duty.mode !== 'edit' ? 'ثبت مسیر ارتباطی' : `ویرایش مسیر ارتباطی ${duty.onEdit?.social_type}`}
+                                </Button>
                             </Stack>
                         </Box>
                     </Collapse>
