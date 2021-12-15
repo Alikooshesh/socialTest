@@ -13,10 +13,56 @@ import {
 } from "@mui/material";
 import {BsDot} from "react-icons/all";
 import ConnectionCard from "../ConnectionCard";
+import {useEffect, useState} from "react";
+import {editData, getAllData} from "../../services";
+import {connectionData} from "../../interfaces/dataInterface";
+
+export interface Iduty{
+    mode : 'edit' | 'refresh',
+    id? : string
+}
 
 const ConnectionBox = () => {
+    const [duty , setDuty] = useState<false|Iduty>({mode : 'refresh'})
+    const [connectionDataList , setConnectionDataList] = useState<connectionData[] | null>(null)
+
+    const refreshData = async () => {
+        let data:any = await getAllData()
+        data.length ?
+            setConnectionDataList(data.map((item:any) => {
+
+                return(
+                    {
+                        id: item.id,
+                        social_id : item.social_id,
+                        social_link : item.social_link,
+                        social_type : item.social_link.includes('instagram') ? 'instagram' :
+                            item.social_link.includes('facebook') ? 'facebook' :
+                                item.social_link.includes('linkedin') ? 'linkedin' :
+                                    item.social_link.includes('telegram') ? 'telegram' :
+                                        item.social_link.includes('twitter') ? 'twitter' :
+                                            'webSite'
+                    }
+                )
+
+            })):setConnectionDataList([])
+        return connectionDataList
+    }
+
+    useEffect(()=>{
+        if (duty){
+            duty.mode === 'refresh' ?  refreshData() :
+                duty.id &&
+                editData(duty.id, {social_id : "" , social_link : ""}) &&
+                setDuty({mode : 'refresh'})
+
+        }
+        setDuty(false)
+    },[duty])
+
     return(
         <>
+            {console.log(connectionDataList)}
             <Container maxWidth={'lg'}>
                 <Typography variant={'h4'} color={'black'}>حساب کاربری</Typography>
                 <Grid container spacing={1} alignItems={'end'} sx={{marginBottom: '1rem'}}>
@@ -69,15 +115,14 @@ const ConnectionBox = () => {
                         </Box>
 
                         <Grid direction={'column'} container rowSpacing={2}>
-                            <Grid item>
-                                <ConnectionCard/>
-                            </Grid>
-                            <Grid item>
-                                <ConnectionCard/>
-                            </Grid>
-                            <Grid item>
-                                <ConnectionCard/>
-                            </Grid>
+                            {connectionDataList?.map((item ) => {
+                                return(
+                                    <Grid item>
+                                        <ConnectionCard key={`connection-data-${item.id}`} id={item.id} social_id={item.social_id}
+                                                        social_link={item.social_link} social_type={item.social_type} setDuty={setDuty}/>
+                                    </Grid>
+                                )
+                            })}
 
                         </Grid>
                     </Collapse>

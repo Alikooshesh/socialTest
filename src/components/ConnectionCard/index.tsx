@@ -8,48 +8,57 @@ import {
     MdModeEditOutline,
     RiInstagramFill
 } from "react-icons/all";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {connectionData} from "../../interfaces/dataInterface";
 import RemoveDialog from "./removeDialog";
 
-const ConnectionCard:React.FC<connectionData> = (props)=>{
+export interface ConnectionCardProps extends connectionData{
+    setDuty : Function
+}
+
+const ConnectionCard:React.FC<ConnectionCardProps> = (props)=>{
 
     const [removeDialogOpen , setRemoveDialogOpen] = useState<boolean>(false)
+
+    useEffect(()=>{
+        if (!removeDialogOpen){props.setDuty({mode:'refresh'})}
+    },[removeDialogOpen])
 
     return(
         <>
             <Box sx={{backgroundColor:'#eeeeee', padding: '1rem' , height: '4rem'}} borderRadius={'15px'}>
                 <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
-                    <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} sx={{width: '50%'}}>
-                        <Stack direction={'row'}>
-
+                    <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} spacing={4}>
+                        <div style={{paddingLeft : '4px'}}>
                             {props.social_type === 'instagram' && <RiInstagramFill fontSize={'2rem'}/>}
                             {props.social_type === 'facebook' && <GrFacebook fontSize={'2rem'}/>}
                             {props.social_type === 'linkedin' && <GrLinkedin fontSize={'2rem'}/>}
                             {props.social_type === 'telegram' && <FaTelegram fontSize={'2rem'}/>}
                             {props.social_type === 'twitter' && <FaTwitter fontSize={'2rem'}/>}
                             {props.social_type === 'webSite' && <MdHttp fontSize={'2rem'}/>}
-                            <Typography variant={'h6'}>
-                                {props.social_type === 'instagram' && 'اینستاگرام'}
-                                {props.social_type === 'facebook' && 'فیسبوک'}
-                                {props.social_type === 'linkedin' && 'لینکداین'}
-                                {props.social_type === 'telegram' && 'تلگرام'}
-                                {props.social_type === 'twitter' && 'توییتر'}
-                                {props.social_type === 'webSite' && 'وبسایت'}
+                        </div>
+                        <Typography variant={'h6'}>
+                            {props.social_type === 'instagram' && 'اینستاگرام'}
+                            {props.social_type === 'facebook' && 'فیسبوک'}
+                            {props.social_type === 'linkedin' && 'لینکداین'}
+                            {props.social_type === 'telegram' && 'تلگرام'}
+                            {props.social_type === 'twitter' && 'توییتر'}
+                            {props.social_type === 'webSite' && 'وبسایت'}
+                        </Typography>
+                        <Stack direction={'row'} alignItems={'center'}>
+                            <Typography sx={{paddingLeft : '4px'}}>آی دی (ID) :</Typography>
+                            <Typography sx={{direction : 'ltr'}} fontSize={"0.75rem"}>{props.social_id}</Typography>
+                        </Stack>
+                        <Stack direction={'row'} alignItems={'center'}>
+                            <Typography sx={{paddingLeft : '4px'}}>لینک :</Typography>
+                            <Typography sx={{direction : 'ltr'}}>
+                                <a href={props.social_link} style={{color: "orange" ,textDecoration : 'none'}}>{props.social_link}</a>
                             </Typography>
-                        </Stack>
-                        <Stack direction={'row'}>
-                            <Typography> آی دی (ID) :</Typography>
-                            <Typography>{props.social_id}</Typography>
-                        </Stack>
-                        <Stack direction={'row'}>
-                            <Typography> لینک :</Typography>
-                            <Typography>{props.social_link}</Typography>
                         </Stack>
                     </Stack>
 
-                    <Stack direction={'row'} justifyContent={'end'} alignItems={'center'} sx={{width: '50%'}}>
-                        <Button color={'warning'}>
+                    <Stack direction={'row'} justifyContent={'end'} alignItems={'center'}>
+                        <Button color={'warning'} onClick={()=> props.setDuty({mode : 'edit' , id : props.id})}>
                             <MdModeEditOutline />
                             <Typography component={'p'} sx={{marginRight: '0.5rem'}}>ویرایش</Typography>
                         </Button>

@@ -4,7 +4,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, Stack,
     TextField,
     Typography
 } from "@mui/material";
@@ -20,7 +20,8 @@ export interface RemoveDialogProps extends connectionData{
 const RemoveDialog:React.FC<RemoveDialogProps> = (props)=>{
 
     const acceptDeleteData = () => {
-        props.id && deleteData(props.id) && props.setRemoveDialogOpen(false)
+        props.id && deleteData(props.id)
+        props.setRemoveDialogOpen(false)
     }
 
     return(
@@ -28,9 +29,11 @@ const RemoveDialog:React.FC<RemoveDialogProps> = (props)=>{
             <DialogTitle>آیا از تصمیم خود مطمئن هستید؟</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    برای حذف مسیر ارتباطی
-                    {<Typography variant={'subtitle1'}>{props.social_id}</Typography>}
-                    لطفا تایید را بنویسید
+                    <Stack direction={"row"} alignItems={'center'} justifyContent={'start'}>
+                        <Typography>برای حذف مسیر ارتباطی</Typography>
+                        <Typography fontSize={'0.75rem'} sx={{padding : '0 5px 0 5px',direction : 'ltr'}}>{props.social_id}</Typography>
+                        <Typography>لطفا تایید را بنویسید</Typography>
+                    </Stack>
                 </DialogContentText>
                 <TextField
                     margin="dense"
@@ -41,8 +44,8 @@ const RemoveDialog:React.FC<RemoveDialogProps> = (props)=>{
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={()=> props.setRemoveDialogOpen(false)}>Cancel</Button>
-                <Button onClick={acceptDeleteData}>Subscribe</Button>
+                <Button onClick={()=> props.setRemoveDialogOpen(false)} color={'warning'}>Cancel</Button>
+                <Button onClick={acceptDeleteData} color={'inherit'}>حذف</Button>
             </DialogActions>
         </Dialog>
     )
