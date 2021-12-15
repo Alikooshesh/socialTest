@@ -14,10 +14,11 @@ import {
 import {BsDot, FaTelegram, FaTwitter, GrFacebook, GrLinkedin, MdHttp, RiInstagramFill} from "react-icons/all";
 import ConnectionCard from "../ConnectionCard";
 import React, {useEffect, useState} from "react";
-import {_addData, _editData, _getAllData} from "../../services";
+import {_addData, _editData, serverAddress} from "../../services";
 import {connectionData} from "../../interfaces/dataInterface";
 import {FormikValues, useFormik} from "formik";
 import * as yup from 'yup';
+import axios from "axios";
 
 export interface Iduty{
     mode : 'edit' | 'refresh' | null,
@@ -30,24 +31,30 @@ const ConnectionBox = () => {
     const [addEditBoxOpen , setAddEditBoxOpen] = useState<boolean>(false)
 
     const refreshData = async () => {
-        console.log('ss')
-        let data:any = await _getAllData()
-        await setConnectionDataList(data.map((item:any) => {
-            return(
-                {
-                    id: item.id,
-                    social_id : item.social_id,
-                    social_link : item.social_link,
-                    social_type : item.social_link.includes('instagram') ? 'instagram' :
-                        item.social_link.includes('facebook') ? 'facebook' :
-                            item.social_link.includes('linkedin') ? 'linkedin' :
-                                item.social_link.includes('telegram') ? 'telegram' :
-                                    item.social_link.includes('twitter') ? 'twitter' :
-                                        'webSite'
-                }
-            )
-        }))
-
+        let _data:any = []
+        axios.get(`http://${serverAddress}/socials`)
+            .then(async (data) => {
+                _data = await data.data.map((item:any) => {
+                    return(
+                        {
+                            id: item.id,
+                            social_id : item.social_id,
+                            social_link : item.social_link,
+                            social_type : item.social_link.includes('instagram') ? 'instagram' :
+                                item.social_link.includes('facebook') ? 'facebook' :
+                                    item.social_link.includes('linkedin') ? 'linkedin' :
+                                        item.social_link.includes('telegram') ? 'telegram' :
+                                            item.social_link.includes('twitter') ? 'twitter' :
+                                                'webSite'
+                        }
+                    )
+                })
+                setConnectionDataList([..._data])
+            })
+            .catch(err => {
+                console.error(err)
+                throw err
+            })
         duty.mode === 'refresh' && setDuty({mode:null})
     }
 
@@ -90,6 +97,7 @@ const ConnectionBox = () => {
                 _editData(duty.onEdit?.id , {social_link : values.social_link , social_id : values.social_id}) :
                 _addData({social_link : values.social_link , social_id : values.social_id})
             setDuty({mode: 'refresh'})
+            refreshData()
             formik.resetForm()
         }else {
             console.error('duplicate data')
@@ -98,7 +106,7 @@ const ConnectionBox = () => {
 
     return(
         <>
-            {console.log({formik : formik.values , duty})}
+            {console.log({duty : duty})}
             <Container maxWidth={'lg'}>
                 <Typography variant={'h4'} color={'black'}>حساب کاربری</Typography>
                 <Grid container spacing={1} alignItems={'end'} sx={{marginBottom: '1rem'}}>
