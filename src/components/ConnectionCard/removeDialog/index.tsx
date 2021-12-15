@@ -31,7 +31,7 @@ const RemoveDialog:React.FC<RemoveDialogProps> = (props)=>{
             acceptDelInput : ''
         },
         onSubmit : (values) => {
-            values.acceptDelInput === 'تایید' && acceptDeleteData()
+
         }
     })
 
@@ -62,7 +62,8 @@ const RemoveDialog:React.FC<RemoveDialogProps> = (props)=>{
             </DialogContent>
             <DialogActions>
                 <Button onClick={()=> props.setRemoveDialogOpen(false)} color={'warning'}>انصراف</Button>
-                <Button onClick={acceptDeleteData} color={'inherit'} type={"submit"}>حذف</Button>
+                <Button onClick={() => acceptDeleteData()}
+                        color={'inherit'} disabled={formik.values.acceptDelInput === 'تایید' ? false : true}>حذف</Button>
             </DialogActions>
         </Dialog>
     )
